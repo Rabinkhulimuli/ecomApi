@@ -76,7 +76,7 @@ const googleredirect = async (req: Request, res: Response, next: Function): Prom
     });
 
     // Redirect to the dashboard after setting the cookie
-    res.redirect("http://localhost:3000?message=successfullyloggedin");
+    res.redirect(`${process.env.ORIGIN}?message=successfullyloggedin`);
   } catch (err) {
     next(err);  // Ensure any error is passed to the error handler
   }
