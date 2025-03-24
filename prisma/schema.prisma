@@ -1,0 +1,140 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @default(cuid()) @id
+  email String @unique
+  name String ?
+  image String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  role Role @default(USER)
+  order Order[] 
+  cartItems CartItem[] 
+  reviews Review[]
+  addresses Address[]
+  wishlist WishList[]
+}
+enum Role {
+  USER
+  ADMIN
+}
+model Order {
+  id String @default(uuid()) @id
+  user User @relation(fields:[userId],references: [id])
+  userId String
+  totalPrice Decimal
+  status OrderStatus @default(PENDING)
+  createdAt DateTime @default(now())
+  orderItems OrderItem[]
+  payment Payment?
+  shhipping Address?
+}
+enum OrderStatus{
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELED
+}
+model Address{
+  id String @id @default(uuid())
+  user User @relation(fields: [userId],references: [id])
+  order Order @relation(fields: [orderId],references: [id])
+  orderId String @unique
+  userId String
+  street String
+  city String
+  country String
+  postalCode String
+}
+model OrderItem{
+  id String @default(uuid()) @id
+  order Order @relation(fields:[orderId],references:[id])
+  orderId String
+  product Product @relation(fields:[productId],references: [id])
+  productId String
+  quantity Int
+  price Decimal
+}
+model Payment{
+  id String @default(uuid()) @id
+  order Order @relation(fields:[orderId],references: [id])
+  orderId String @unique
+  status PaymentStatus @default(PENDING)
+  method PaymentMethod
+  transactionId String
+  createdAt DateTime @default(now())
+}
+enum PaymentStatus{
+    PENDING
+    COMPLETED
+    FAILED
+}
+enum PaymentMethod{
+  CASH_ON_DELIVERY
+  CREDIT_CARD
+  BANK_TRANSFER
+  PAYPAL
+}
+model Product{
+  id String @default(uuid()) @id
+  name String 
+  description String
+  price Decimal
+  stock Int
+  category Category @relation(fields:[categoryId],references: [id])
+  categoryId String
+  images String[] //multiple images
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  reviews Review[]
+  cartItems CartItem[]
+  orderItems OrderItem[]
+  wishlist WishList[]
+}
+model WishList{
+  id String @id @default(uuid())
+  user User @relation(fields: [userId],references: [id])
+  userId String
+  product Product @relation(fields: [productId],references: [id])
+  productId String
+  createdAt DateTime @default(now())
+  @@unique([userId,productId])
+}
+model Category{
+  id String @default(uuid()) @id
+  name String @unique
+  products Product[]
+}
+model Review{
+  id String @default(uuid()) @id
+  user User @relation(fields: [userId],references: [id])
+  userId String
+  product Product @relation(fields: [productId],references: [id])
+  productId String
+  rating Int //<5
+  comment String?
+  createdAt DateTime @default(now())
+}
+model CartItem{
+  id String @id @default(uuid())
+  user User @relation(fields: [userId],references: [id])
+  userId String
+  product Product @relation(fields: [productId],references: [id])
+  productId String
+  quantity Int @default(1)
+  createdAt DateTime @default(now())
+}
