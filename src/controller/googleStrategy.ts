@@ -1,6 +1,6 @@
 import passport from "passport";
 import jwt from "jsonwebtoken";
-import { Strategy as GoogleStrategy, VerifyCallback } from "passport-google-oauth20";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import dotenv from "dotenv";
 import { Request, Response } from "express";
 import prisma from "../database/prisma.client";
@@ -15,10 +15,7 @@ const googleStrategy = () => {
         clientSecret: process.env.GOOGLE_SECRET || "",
         callbackURL: process.env.CALLBACK_URL || "http://localhost:3001/api/auth/google/redirect",
       },
-      async(accessToken:string,
-         refreshToken:string,
-          profile:any,
-           done:VerifyCallback) => {
+      async(accessToken, refreshToken, profile, done) => {
         let user = await prisma.user.findUnique({
           where:{email: profile.emails?.[0].value}
         })
@@ -64,7 +61,7 @@ const googleStrategy = () => {
 
 const googleredirect = async (req: Request, res: Response, next: Function): Promise<void> => {
   try {
-    const user = req.user as { token?: string } | undefined;
+    const user = req.user as { token: string };
 
     if (!user || !user.token) {
         res.status(401).json({ message: "Authentication failed" });

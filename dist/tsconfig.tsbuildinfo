@@ -1,0 +1,1 @@
+{"root":["../src/global.d.ts","../src/index.ts","../src/controller/googlestrategy.ts","../src/database/prisma.client.ts","../src/router/google.ts"],"errors":true,"version":"5.8.2"}
