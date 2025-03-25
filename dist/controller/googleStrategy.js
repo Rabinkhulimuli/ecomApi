@@ -14,7 +14,7 @@ const googleStrategy = () => {
     passport_1.default.use(new passport_google_oauth20_1.Strategy({
         clientID: process.env.GOOGLE_CLIENT || "",
         clientSecret: process.env.GOOGLE_SECRET || "",
-        callbackURL: process.env.CALLBACK_URL || "http://localhost:3001/api/auth/google/redirect",
+        callbackURL: process.env.CALLBACK_URL,
     }, async (accessToken, refreshToken, profile, done) => {
         let user = await prisma_client_1.default.user.findUnique({
             where: { email: profile.emails?.[0].value }

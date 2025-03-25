@@ -13,7 +13,7 @@ const googleStrategy = () => {
       {
         clientID: process.env.GOOGLE_CLIENT || "",
         clientSecret: process.env.GOOGLE_SECRET || "",
-        callbackURL: process.env.CALLBACK_URL || "http://localhost:3001/api/auth/google/redirect",
+        callbackURL: process.env.CALLBACK_URL ,
       },
       async(accessToken, refreshToken, profile, done) => {
         let user = await prisma.user.findUnique({
