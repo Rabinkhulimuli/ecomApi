@@ -91,10 +91,7 @@ const googleredirect = async (req: Request, res: Response, next: Function): Prom
       path: "/", 
       domain: process.env.COOKIE_DOMAIN 
     });
-    res.status(200).json({
-      token: user.token,
-      redirectUrl: `${process.env.ORIGIN}/account/myaccount?msg=loggedinSuccessfully`
-    });
+  
     res.redirect(`${process.env.ORIGIN}/account/myaccount?msg=loggedinSuccessfully`);
   } catch (err) {
     next(err);
