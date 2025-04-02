@@ -14,6 +14,7 @@ const express_session_1 = __importDefault(require("express-session"));
 const googleStrategy_1 = require("./controller/googleStrategy");
 const prisma_session_store_1 = require("@quixo3/prisma-session-store");
 const prisma_client_1 = __importDefault(require("./database/prisma.client"));
+const client_1 = require("@prisma/client");
 const PORT = process.env.PORT;
 const app = (0, express_1.default)();
 app.use((0, cookie_parser_1.default)());
@@ -24,13 +25,13 @@ app.use((0, cors_1.default)({
 }));
 app.use((0, express_session_1.default)({
     secret: process.env.SESSION_SECRET || "djdjjdsc",
-    resave: false,
-    saveUninitialized: false,
-    store: new prisma_session_store_1.PrismaSessionStore(prisma_client_1.default, {
+    resave: true,
+    saveUninitialized: true,
+    store: new prisma_session_store_1.PrismaSessionStore(new client_1.PrismaClient(), {
         checkPeriod: 2 * 60 * 1000,
-        dbRecordIdFunction: undefined,
         dbRecordIdIsSessionId: true,
-        ttl: 24 * 60 * 60 * 1000
+        ttl: 24 * 60 * 60 * 1000,
+        dbRecordIdFunction: undefined
     })
 }));
 app.use(passport_1.default.initialize());

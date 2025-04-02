@@ -11,6 +11,7 @@ import { googleStrategy } from "./controller/googleStrategy";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 
 import prisma from "./database/prisma.client"
+import { PrismaClient } from "@prisma/client"
 
 const PORT = process.env.PORT
 const app= express()
@@ -23,13 +24,14 @@ app.use(cors({
 }))
 app.use(session({
   secret:process.env.SESSION_SECRET||"djdjjdsc",
-  resave:false,
-  saveUninitialized:false,
+  resave:true,
+  saveUninitialized:true,
   store: new PrismaSessionStore(
-    prisma as any,{
+    new PrismaClient() as any,{
       checkPeriod:2*60*1000,
         dbRecordIdIsSessionId:true,
-        ttl:24*60*60*1000
+        ttl:24*60*60*1000,
+        dbRecordIdFunction: undefined
     }
   )
 }))
