@@ -27,7 +27,8 @@ const googleStrategy = () => {
                 id: profile.id,
                 name: profile.displayName,
                 email: profile.emails?.[0].value || "",
-                image: profile.photos?.[0].value || ""
+                image: profile.photos?.[0].value || "",
+                password:""
               }
             });
           }
@@ -37,7 +38,8 @@ const googleStrategy = () => {
               id: user.id,
               name: user.name,
               email: user.email,
-              image: user.image
+              image: user.image,
+              password:""
             },
             process.env.JWT_SECRET || "default_secret",
             { expiresIn: "10m" }
