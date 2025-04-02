@@ -82,16 +82,19 @@ const googleredirect = async (req: Request, res: Response, next: Function): Prom
       return
     }
 
-    // Set the JWT token as a cookie
+   
     res.cookie("jwt", user.token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV !== "development", // Fixed typo "developement"
-      sameSite: "lax", // Changed from "strict" for better compatibility
+      secure: process.env.NODE_ENV === "production", 
+      sameSite: "lax", 
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      path: "/", // Explicit path
-      domain: process.env.COOKIE_DOMAIN // Optional for cross-subdomain
+      path: "/", 
+      domain: process.env.COOKIE_DOMAIN 
     });
-
+    res.status(200).json({
+      token: user.token,
+      redirectUrl: `${process.env.ORIGIN}/account/myaccount?msg=loggedinSuccessfully`
+    });
     res.redirect(`${process.env.ORIGIN}/account/myaccount?msg=loggedinSuccessfully`);
   } catch (err) {
     next(err);
@@ -100,7 +103,7 @@ const googleredirect = async (req: Request, res: Response, next: Function): Prom
 
 const initialSession = async (req: Request, res: Response) => {
   if (req.isAuthenticated()) {
-    // Return minimal user info to frontend
+    
     const { token, ...user } = req.user as any;
     res.json({ user:user,token:token });
   } else {
