@@ -1,4 +1,4 @@
-import prisma from "./database/prisma.client";
+
 import express from "express"
 import cors from "cors"
 import cookieParser from "cookie-parser"
@@ -8,6 +8,9 @@ import user from "./router/user"
 import dotenv from "dotenv"
 import session from "express-session";
 import { googleStrategy } from "./controller/googleStrategy";
+import { PrismaSessionStore } from "@quixo3/prisma-session-store";
+
+import prisma from "./database/prisma.client"
 
 const PORT = process.env.PORT
 const app= express()
@@ -22,6 +25,14 @@ app.use(session({
   secret:process.env.SESSION_SECRET||"djdjjdsc",
   resave:false,
   saveUninitialized:false,
+  store: new PrismaSessionStore(
+    prisma as any,{
+      checkPeriod:2*60*1000,
+        dbRecordIdFunction:undefined,
+        dbRecordIdIsSessionId:true,
+        ttl:24*60*60*1000
+    }
+  )
 }))
 app.use(passport.initialize())
 app.use(passport.session())

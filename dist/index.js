@@ -3,7 +3,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const prisma_client_1 = __importDefault(require("./database/prisma.client"));
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
@@ -13,6 +12,8 @@ const user_1 = __importDefault(require("./router/user"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const express_session_1 = __importDefault(require("express-session"));
 const googleStrategy_1 = require("./controller/googleStrategy");
+const prisma_session_store_1 = require("@quixo3/prisma-session-store");
+const prisma_client_1 = __importDefault(require("./database/prisma.client"));
 const PORT = process.env.PORT;
 const app = (0, express_1.default)();
 app.use((0, cookie_parser_1.default)());
@@ -25,6 +26,12 @@ app.use((0, express_session_1.default)({
     secret: process.env.SESSION_SECRET || "djdjjdsc",
     resave: false,
     saveUninitialized: false,
+    store: new prisma_session_store_1.PrismaSessionStore(prisma_client_1.default, {
+        checkPeriod: 2 * 60 * 1000,
+        dbRecordIdFunction: undefined,
+        dbRecordIdIsSessionId: true,
+        ttl: 24 * 60 * 60 * 1000
+    })
 }));
 app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());

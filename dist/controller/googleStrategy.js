@@ -36,7 +36,6 @@ const googleStrategy = () => {
                 name: user.name,
                 email: user.email,
                 image: user.image,
-                password: ""
             }, process.env.JWT_SECRET || "default_secret", { expiresIn: "10m" });
             // Return both token and user ID for serialization
             return done(null, {
