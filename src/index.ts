@@ -28,7 +28,6 @@ app.use(session({
   store: new PrismaSessionStore(
     prisma as any,{
       checkPeriod:2*60*1000,
-        dbRecordIdFunction:undefined,
         dbRecordIdIsSessionId:true,
         ttl:24*60*60*1000
     }
