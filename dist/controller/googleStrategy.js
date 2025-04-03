@@ -98,12 +98,19 @@ const initialSession = async (req, res) => {
 };
 exports.initialSession = initialSession;
 const logout = (req, res) => {
-    res.clearCookie('jwt', {
-        path: "/",
-        domain: process.env.COOKIE_DOMAIN
-    });
-    req.logout(() => {
-        res.json({ message: "logged out" });
-    });
+    try {
+        res.clearCookie('jwt', {
+            path: "/",
+            domain: process.env.COOKIE_DOMAIN
+        });
+        req.logout(() => {
+            res.json({ message: "logged out" });
+            return;
+        });
+    }
+    catch (err) {
+        res.status(500).send();
+        return;
+    }
 };
 exports.logout = logout;

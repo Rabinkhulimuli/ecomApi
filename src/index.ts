@@ -35,12 +35,13 @@ app.use(session({
     }
   )
 }))
+app.use(express.json())
 app.use(passport.initialize())
 app.use(passport.session())
 googleStrategy()
 
 app.use(google)
-app.use(user)
+app.use("/user",user)
 app.listen(PORT,()=> {
   console.log(`server started at ${PORT}`)
 })

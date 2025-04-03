@@ -110,13 +110,19 @@ const initialSession = async (req: Request, res: Response) => {
 };
 
 const logout = (req: Request, res: Response) => {
+ try{
   res.clearCookie('jwt', {
     path: "/",
     domain: process.env.COOKIE_DOMAIN
   });
   req.logout(() => {
     res.json({ message: "logged out" });
+    return
   });
+ } catch(err){
+  res.status(500).send()
+  return
+ }
 };
 
 export { googleStrategy, logout, googleredirect, initialSession };
