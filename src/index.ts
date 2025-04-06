@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser"
 import passport from "passport"
 import google from "./router/google"
 import user from "./router/user"
+import product from "./router/product"
 import dotenv from "dotenv"
 import session from "express-session";
 import { googleStrategy } from "./controller/googleStrategy";
@@ -42,6 +43,7 @@ googleStrategy()
 
 app.use(google)
 app.use("/user",user)
+app.use("/admin",product)
 app.listen(PORT,()=> {
   console.log(`server started at ${PORT}`)
 })
