@@ -12,7 +12,14 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
+model PushSubscription {
+  id            String   @id @default(cuid())
+  endpoint      String   @unique
+  keys          Json
+  expirationTime DateTime? // Using BigInt to store the numeric value
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
 model Session {
   id    String @id @default(cuid())
   sid           String @unique
@@ -109,13 +116,20 @@ model Product{
   stock Int
   category Category @relation(fields:[categoryId],references: [id])
   categoryId String
-  images String[] //multiple images
+  images Image[] //multiple images
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   reviews Review[]
   cartItems CartItem[]
   orderItems OrderItem[]
   wishlist WishList[]
+}
+model Image{
+  id String @id @default(uuid())
+  productId String
+  path String
+  product Product @relation(fields: [productsId],references: [id],onDelete: Cascade)
+  productsId String
 }
 model WishList{
   id String @id @default(uuid())

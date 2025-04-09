@@ -1,8 +1,12 @@
 import express from "express"
 import { generateAccessToken, verifyUser } from "../controller/adminUser"
-import { createProduct } from "../controller/product"
+import { createCategory, createProduct } from "../controller/product"
+import multer from "multer"
+const upload= multer({storage:multer.memoryStorage()})
 const router= express.Router()
-router.route("/verifyuser").post(verifyUser)
-router.route("/refresh-token").get(generateAccessToken)
-router.route("/create-product").post(createProduct)
+router.route("/verifyuser").post(express.json(),verifyUser)
+router.route("/refresh-token").get(express.json(),generateAccessToken)
+router.route("/create-product").post(upload.array("images"),createProduct)
+router.route("/create-category").post(express.json(),createCategory)
+
 export default router
