@@ -9,6 +9,7 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const passport_1 = __importDefault(require("passport"));
 const google_1 = __importDefault(require("./router/google"));
 const user_1 = __importDefault(require("./router/user"));
+const product_1 = __importDefault(require("./router/product"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const express_session_1 = __importDefault(require("express-session"));
 const googleStrategy_1 = require("./controller/googleStrategy");
@@ -34,6 +35,7 @@ app.use((0, express_session_1.default)({
         dbRecordIdFunction: undefined
     })
 }));
+app.use("/admin", product_1.default);
 app.use(express_1.default.json());
 app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());

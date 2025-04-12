@@ -126,7 +126,7 @@ model Product{
 }
 model Image{
   id String @id @default(uuid())
-  productId String
+  publicId String
   path String
   product Product @relation(fields: [productsId],references: [id],onDelete: Cascade)
   productsId String

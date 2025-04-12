@@ -36,15 +36,16 @@ app.use(session({
     }
   )
 }))
-app.use("/admin",product)
+
 app.use(express.json())
+app.use(express.urlencoded({extended:true}))
 app.use(passport.initialize())
 app.use(passport.session())
 googleStrategy()
 
 app.use(google)
 app.use("/user",user)
-
+app.use("/admin",product)
 app.listen(PORT,()=> {
   console.log(`server started at ${PORT}`)
 })
