@@ -35,13 +35,14 @@ app.use((0, express_session_1.default)({
         dbRecordIdFunction: undefined
     })
 }));
-app.use("/admin", product_1.default);
 app.use(express_1.default.json());
+app.use(express_1.default.urlencoded({ extended: true }));
 app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
 (0, googleStrategy_1.googleStrategy)();
 app.use(google_1.default);
 app.use("/user", user_1.default);
+app.use("/admin", product_1.default);
 app.listen(PORT, () => {
     console.log(`server started at ${PORT}`);
 });

@@ -16,7 +16,7 @@ model PushSubscription {
   id            String   @id @default(cuid())
   endpoint      String   @unique
   keys          Json
-  expirationTime DateTime? // Using BigInt to store the numeric value
+  expirationTime DateTime? 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
@@ -110,7 +110,7 @@ enum PaymentMethod{
 }
 model Product{
   id String @default(uuid()) @id
-  name String 
+  name String
   description String
   price Decimal
   stock Int
@@ -123,13 +123,26 @@ model Product{
   cartItems CartItem[]
   orderItems OrderItem[]
   wishlist WishList[]
+  returnPolicy String?
+  discount Decimal
+  brand String
+  dimension Dimension?
+  @@index([createdAt,id])
+}
+model Dimension{
+  id String @id @default(uuid())
+  depth Decimal
+  height Decimal
+  width Decimal
+  product Product @relation(fields: [productId],references: [id])
+  productId String @unique
 }
 model Image{
   id String @id @default(uuid())
-  publicId String
+  publicId String?
   path String
-  product Product @relation(fields: [productsId],references: [id],onDelete: Cascade)
-  productsId String
+  product Product @relation(fields: [productId],references: [id],onDelete: Cascade)
+  productId String
 }
 model WishList{
   id String @id @default(uuid())
