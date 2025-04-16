@@ -21,7 +21,6 @@ const getAllProduct =async(req:Request,res:Response)=> {
             dimension:true,
             reviews:true,
             images:true,
-
         }
         })
         if(!product){

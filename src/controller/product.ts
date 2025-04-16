@@ -29,8 +29,6 @@ const createProduct = async (req: Request, res: Response) => {
   const { name, description, price, stock, category, discount } = req.body;
 
   try {
-    console.log("body", req.body);
-    console.log("image", req.files);
     const images = req.files as Express.Multer.File[] | undefined;
     if (!images || images.length == 0) {
       res.status(500).json({ msg: "image is empty" });
@@ -58,12 +56,10 @@ const createProduct = async (req: Request, res: Response) => {
         price: parseFloat(price),
         stock: parseInt(stock),
         images: {
-          createMany: {
-            data: uploadedImages.map((img) => ({
+          create:  uploadedImages.map((img) => ({
               publicId: img.publicId,
               path: img.imageUrl,
             })),
-          },
         },
         category: {
           connect: { name: category },
