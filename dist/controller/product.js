@@ -26,8 +26,6 @@ const uploadImage = async (file) => {
 const createProduct = async (req, res) => {
     const { name, description, price, stock, category, discount } = req.body;
     try {
-        console.log("body", req.body);
-        console.log("image", req.files);
         const images = req.files;
         if (!images || images.length == 0) {
             res.status(500).json({ msg: "image is empty" });
@@ -54,12 +52,10 @@ const createProduct = async (req, res) => {
                 price: parseFloat(price),
                 stock: parseInt(stock),
                 images: {
-                    createMany: {
-                        data: uploadedImages.map((img) => ({
-                            publicId: img.publicId,
-                            path: img.imageUrl,
-                        })),
-                    },
+                    create: uploadedImages.map((img) => ({
+                        publicId: img.publicId,
+                        path: img.imageUrl,
+                    })),
                 },
                 category: {
                     connect: { name: category },

@@ -57,8 +57,8 @@ const createProduct = async (req: Request, res: Response) => {
         stock: parseInt(stock),
         images: {
           create:  uploadedImages.map((img) => ({
-              publicId: img.publicId,
-              path: img.imageUrl,
+              publicId: img.publicId as string,
+              path: img.imageUrl as string,
             })),
         },
         category: {
