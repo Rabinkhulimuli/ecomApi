@@ -19,7 +19,7 @@ const getAllProduct =async(req:Request,res:Response)=> {
         include:{
            
             reviews:true,
-            images:true,
+            
         }
         })
         if(!product){
