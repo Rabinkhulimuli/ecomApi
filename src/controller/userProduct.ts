@@ -17,6 +17,7 @@ const getAllProduct =async(req:Request,res:Response)=> {
             }
         ],
         include:{
+            dimension:true,
             reviews:true,
             images:true,
         }

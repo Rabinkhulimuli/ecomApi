@@ -22,7 +22,6 @@ const getAllProduct = async (req, res) => {
                 }
             ],
             include: {
-                dimension: true,
                 reviews: true,
                 images: true,
             }
