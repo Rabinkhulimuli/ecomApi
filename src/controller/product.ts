@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
 import { v2 as cloudanary } from "cloudinary";
 import prisma from "../database/prisma.client";
-import { connect } from "http2";
-import { create } from "domain";
 cloudanary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.CLOUD_API_KEY,
