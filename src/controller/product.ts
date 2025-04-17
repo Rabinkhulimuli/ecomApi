@@ -56,10 +56,10 @@ const createProduct = async (req: Request, res: Response) => {
         price: parseFloat(price),
         stock: parseInt(stock),
         images: {
-          create:  uploadedImages.map((img) => ({
+          create: [ ...uploadedImages.map((img) => ({
               publicId: img.publicId as string,
               path: img.imageUrl as string,
-            })),
+            }))]
         },
         category: {
           connect: { name: category },
@@ -150,7 +150,7 @@ const uploadProduct = async (req: Request, res: Response) => {
           discount:parseFloat(discount),
           returnPolicy:returnPolicy||"no return accepted",
           images: {
-            create: (images||[]).map((img: string) => ({ path: img })),
+            create:[ ...(images||[]).map((img: string) => ({ path: img })),]
           },
             dimension: {
               create: {

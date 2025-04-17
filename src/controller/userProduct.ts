@@ -1,6 +1,5 @@
 import { Request, Response } from "express"
 import prisma from "../database/prisma.client"
-import { URLSearchParams } from "url"
 const getAllProduct =async(req:Request,res:Response)=> {
     try{
         const {myCursor}=req.query
