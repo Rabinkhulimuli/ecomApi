@@ -46,6 +46,10 @@ googleStrategy()
 app.use(google)
 app.use("/user",user)
 app.use("/admin",product)
+app.get("/",(req,res)=> {
+  res.status(200).send("hello")
+  return
+})
 app.listen(PORT,()=> {
   console.log(`server started at ${PORT}`)
 })
