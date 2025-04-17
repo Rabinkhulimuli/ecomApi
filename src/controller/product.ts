@@ -132,7 +132,7 @@ const uploadProduct = async (req: Request, res: Response) => {
       returnPolicy,
     } = req.body;
 
-    const productsData = await prisma.$transaction(async (prisma) => {
+   /*  const productsData = await prisma.$transaction(async (prisma) => {
       const product = await prisma.product.create({
         data: {
           name,
@@ -204,7 +204,8 @@ const uploadProduct = async (req: Request, res: Response) => {
       maxWait:40000,
       timeout:40000
     });
-    res.status(201).json({ productsData });
+    res.status(201).json({ productsData }); */
+    res.send()
     return;
   } catch (err) {
     res.status(400).json({ err: err });
