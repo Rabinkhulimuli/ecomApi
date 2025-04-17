@@ -1,27 +1,21 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.initialSession = exports.googleredirect = exports.logout = exports.googleStrategy = void 0;
-const passport_1 = __importDefault(require("passport"));
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const passport_google_oauth20_1 = require("passport-google-oauth20");
-const dotenv_1 = __importDefault(require("dotenv"));
-const prisma_client_1 = __importDefault(require("../database/prisma.client"));
-dotenv_1.default.config();
+import passport from "passport";
+import jwt from "jsonwebtoken";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import dotenv from "dotenv";
+import prisma from "../database/prisma.client";
+dotenv.config();
 const googleStrategy = () => {
-    passport_1.default.use(new passport_google_oauth20_1.Strategy({
+    passport.use(new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT || "", // Typo fixed (GOOGLE_CLIENT)
         clientSecret: process.env.GOOGLE_SECRET || "",
         callbackURL: process.env.CALLBACK_URL,
     }, async (accessToken, refreshToken, profile, done) => {
         try {
-            let user = await prisma_client_1.default.user.findUnique({
+            let user = await prisma.user.findUnique({
                 where: { email: profile.emails?.[0].value }
             });
             if (!user) {
-                user = await prisma_client_1.default.user.create({
+                user = await prisma.user.create({
                     data: {
                         id: profile.id,
                         name: profile.displayName,
@@ -31,7 +25,7 @@ const googleStrategy = () => {
                     }
                 });
             }
-            const token = jsonwebtoken_1.default.sign({
+            const token = jwt.sign({
                 id: user.id,
                 name: user.name,
                 email: user.email,
@@ -48,13 +42,13 @@ const googleStrategy = () => {
         }
     }));
     // Serialize user into session
-    passport_1.default.serializeUser((user, done) => {
+    passport.serializeUser((user, done) => {
         done(null, user.id); // Only store the ID
     });
     // Deserialize user from session
-    passport_1.default.deserializeUser(async (id, done) => {
+    passport.deserializeUser(async (id, done) => {
         try {
-            const user = await prisma_client_1.default.user.findUnique({
+            const user = await prisma.user.findUnique({
                 where: { id }
             });
             done(null, user);
@@ -64,7 +58,6 @@ const googleStrategy = () => {
         }
     });
 };
-exports.googleStrategy = googleStrategy;
 const googleredirect = async (req, res, next) => {
     try {
         const user = req.user;
@@ -86,7 +79,6 @@ const googleredirect = async (req, res, next) => {
         next(err);
     }
 };
-exports.googleredirect = googleredirect;
 const initialSession = async (req, res) => {
     if (req.isAuthenticated()) {
         const { token, ...user } = req.user;
@@ -96,7 +88,6 @@ const initialSession = async (req, res) => {
         res.status(401).json({ error: "unauthorized" });
     }
 };
-exports.initialSession = initialSession;
 const logout = (req, res) => {
     try {
         res.clearCookie('jwt', {
@@ -113,4 +104,4 @@ const logout = (req, res) => {
         return;
     }
 };
-exports.logout = logout;
+export { googleStrategy, logout, googleredirect, initialSession };

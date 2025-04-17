@@ -1,16 +1,10 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateAccessToken = exports.verifyUser = void 0;
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const cookie_1 = __importDefault(require("cookie"));
-const prisma_client_1 = __importDefault(require("../database/prisma.client"));
+import jwt from "jsonwebtoken";
+import cookie from "cookie";
+import prisma from "../database/prisma.client";
 const jwtSecret = process.env.JWT_SECRET;
 const generateTokens = (userId) => {
-    const accessToken = jsonwebtoken_1.default.sign({ userId }, jwtSecret, { expiresIn: '15m' });
-    const refreshToken = jsonwebtoken_1.default.sign({ userId }, jwtSecret, { expiresIn: '7d' });
+    const accessToken = jwt.sign({ userId }, jwtSecret, { expiresIn: '15m' });
+    const refreshToken = jwt.sign({ userId }, jwtSecret, { expiresIn: '7d' });
     return { accessToken, refreshToken };
 };
 const generateAccessToken = async (req, res) => {
@@ -19,7 +13,7 @@ const generateAccessToken = async (req, res) => {
         res.status(401).json({ message: "no refresh token provided" });
         return;
     }
-    jsonwebtoken_1.default.verify(refreshToken, jwtSecret, (err, decoded) => {
+    jwt.verify(refreshToken, jwtSecret, (err, decoded) => {
         if (err) {
             res.status(401).json({ message: "invalid refresh token" });
             return;
@@ -29,16 +23,15 @@ const generateAccessToken = async (req, res) => {
         return;
     });
 };
-exports.generateAccessToken = generateAccessToken;
 const verifyUser = async (req, res) => {
     const { email, id } = req.body;
     try {
         console.log(email);
-        let user = await prisma_client_1.default?.user.findUnique({
+        let user = await prisma?.user.findUnique({
             where: { email: email }
         });
         if (!user) {
-            user = await prisma_client_1.default?.user.create({
+            user = await prisma?.user.create({
                 data: {
                     email: email,
                     id: id,
@@ -53,7 +46,7 @@ const verifyUser = async (req, res) => {
             return;
         }
         const { accessToken, refreshToken } = generateTokens(user.id);
-        res.setHeader('set-Cookie', cookie_1.default.serialize('refresh-token', refreshToken, {
+        res.setHeader('set-Cookie', cookie.serialize('refresh-token', refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
@@ -67,4 +60,4 @@ const verifyUser = async (req, res) => {
         return;
     }
 };
-exports.verifyUser = verifyUser;
+export { verifyUser, generateAccessToken };

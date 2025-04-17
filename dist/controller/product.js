@@ -1,19 +1,13 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadProduct = exports.getAllCategory = exports.createCategory = exports.createProduct = void 0;
-const cloudinary_1 = require("cloudinary");
-const prisma_client_1 = __importDefault(require("../database/prisma.client"));
-cloudinary_1.v2.config({
+import { v2 as cloudanary } from "cloudinary";
+import prisma from "../database/prisma.client";
+cloudanary.config({
     cloud_name: process.env.CLOUD_NAME,
     api_key: process.env.CLOUD_API_KEY,
     api_secret: process.env.CLOUD_API_SECRET,
 });
 const uploadImage = async (file) => {
     try {
-        const resUrl = await cloudinary_1.v2.uploader.upload(file, {
+        const resUrl = await cloudanary.uploader.upload(file, {
             resource_type: "auto",
         });
         return resUrl;
@@ -79,19 +73,18 @@ const createProduct = async (req, res) => {
         return;
     }
 };
-exports.createProduct = createProduct;
 const createCategory = async (req, res) => {
     const { name } = req.body;
     const newname = name.toLowerCase();
     try {
-        const category = await prisma_client_1.default.category.findUnique({
+        const category = await prisma.category.findUnique({
             where: { name: newname },
         });
         if (category) {
             res.status(401).json({ msg: "duplicate category" });
             return;
         }
-        const newCategory = await prisma_client_1.default?.category.create({
+        const newCategory = await prisma?.category.create({
             data: {
                 name: newname,
             },
@@ -103,10 +96,9 @@ const createCategory = async (req, res) => {
         res.status(400).json({ error: err });
     }
 };
-exports.createCategory = createCategory;
 const getAllCategory = async (req, res) => {
     try {
-        const data = await prisma_client_1.default.category.findMany();
+        const data = await prisma.category.findMany();
         if (!data) {
             res.status(400).json({ msg: "category is empty" });
             return;
@@ -119,7 +111,6 @@ const getAllCategory = async (req, res) => {
         return;
     }
 };
-exports.getAllCategory = getAllCategory;
 const uploadProduct = async (req, res) => {
     try {
         const { name, description, price, stock, category, brand, discount, images, reviews = [], dimensions, returnPolicy, } = req.body;
@@ -204,4 +195,4 @@ const uploadProduct = async (req, res) => {
         return;
     }
 };
-exports.uploadProduct = uploadProduct;
+export { createProduct, createCategory, getAllCategory, uploadProduct };
