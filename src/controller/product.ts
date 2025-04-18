@@ -27,7 +27,7 @@ const createProduct = async (req: Request, res: Response) => {
   const { name, description, price, stock, category, discount } = req.body;
 
   try {
-   /*  const images = req.files as Express.Multer.File[] | undefined;
+    const images = req.files as Express.Multer.File[] | undefined;
     if (!images || images.length == 0) {
       res.status(500).json({ msg: "image is empty" });
       return;
@@ -71,7 +71,7 @@ const createProduct = async (req: Request, res: Response) => {
         category: true,
       },
     });
-    res.status(201).json(productData); */
+    res.status(201).json(productData); 
     res.send()
     return;
   } catch (err) {
@@ -132,7 +132,7 @@ const uploadProduct = async (req: Request, res: Response) => {
       returnPolicy,
     } = req.body;
 
-   /*  const productsData = await prisma.$transaction(async (prisma) => {
+    const productsData = await prisma.$transaction(async (prisma) => {
       const product = await prisma.product.create({
         data: {
           name,
@@ -204,7 +204,7 @@ const uploadProduct = async (req: Request, res: Response) => {
       maxWait:40000,
       timeout:40000
     });
-    res.status(201).json({ productsData }); */
+    res.status(201).json({ productsData }); 
     res.send()
     return;
   } catch (err) {

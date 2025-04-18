@@ -1,8 +1,14 @@
-import prisma from "../database/prisma.client";
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getAllProduct = void 0;
+const prisma_client_1 = __importDefault(require("../database/prisma.client"));
 const getAllProduct = async (req, res) => {
     try {
         const { myCursor } = req.query;
-        const product = await prisma?.product.findMany({
+        const product = await prisma_client_1.default?.product.findMany({
             take: 10,
             skip: myCursor ? 1 : 0,
             cursor: myCursor ? {
@@ -33,4 +39,4 @@ const getAllProduct = async (req, res) => {
         return;
     }
 };
-export { getAllProduct };
+exports.getAllProduct = getAllProduct;
